@@ -1,0 +1,159 @@
+/* Layanan Page Styles */
+
+.service-details {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.service-details h6 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.service-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.service-list li {
+  padding: 0.3rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--light-text);
+  font-size: 0.95rem;
+}
+
+.service-list li::before {
+  content: "•";
+  color: var(--primary-color);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0.3rem;
+}
+
+/* Emergency Card Styling */
+.emergency-card {
+  border: 2px solid #dc3545;
+  background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+}
+
+.emergency-card .service-icon {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.emergency-card .emergency-icon {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.emergency-contact {
+  background: rgba(220, 53, 69, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.emergency-contact p {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+}
+
+/* Service Card Enhancements */
+.service-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.service-card .card-title {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.service-card .card-text {
+  color: var(--light-text);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* Information Section */
+.alert-info {
+  background-color: rgba(13, 110, 253, 0.1);
+  border: 1px solid rgba(13, 110, 253, 0.2);
+  color: #084298;
+  border-radius: 10px;
+}
+
+/* Clock and Calendar Icons */
+.fa-clock, .fa-calendar {
+  color: var(--primary-color);
+}
+
+/* List Styling for Requirements */
+.list-unstyled li {
+  padding: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+.text-success {
+  color: #198754 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .service-details {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+  }
+  
+  .service-list li {
+    font-size: 0.9rem;
+    padding: 0.2rem 0;
+  }
+  
+  .emergency-contact {
+    padding: 0.8rem;
+  }
+  
+  .emergency-contact p {
+    font-size: 1rem;
+  }
+  
+  .service-card .card-body {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .service-details h6 {
+    font-size: 1rem;
+  }
+  
+  .service-list li {
+    padding-left: 1.2rem;
+  }
+  
+  .alert-info {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+}
