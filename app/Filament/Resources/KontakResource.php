@@ -95,21 +95,46 @@ class KontakResource extends Resource
         ];
     }
 
-    public static function getPages(): array
-    {
-        if (Kontak::count() === 0) {
-            Kontak::create([
-                'alamat' => 'alamat tidak tersedia',
-                'telepon' => 'telepon tidak tersedia',
-                'email' => '',
-            ]);
-        }
+    // public static function getPages(): array
+    // {
+    //     if (Kontak::count() === 0) {
+    //         Kontak::create([
+    //             'alamat' => 'alamat tidak tersedia',
+    //             'telepon' => 'telepon tidak tersedia',
+    //             'email' => '',
+    //         ]);
+    //     }
 
-        return [
-            'index' => Pages\ListKontaks::route('/'),
-            'edit' => Pages\EditKontak::route('/{record}/edit'),
-        ];
+    //     return [
+    //         'index' => Pages\ListKontaks::route('/'),
+    //         'edit' => Pages\EditKontak::route('/{record}/edit'),
+    //     ];
+    // }
+
+    public static function getPages(): array
+{
+    // Jangan jalankan kode yang mengakses database saat aplikasi sedang berjalan di console (mis. composer, artisan package:discover)
+    if (! app()->runningInConsole()) {
+        try {
+            if (Kontak::count() === 0) {
+                Kontak::create([
+                    'alamat' => 'alamat tidak tersedia',
+                    'telepon' => 'telepon tidak tersedia',
+                    'email' => '',
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Jika terjadi error (mis. table belum ada), abaikan sementara agar proses artisan/composer tidak gagal.
+            // Log error tidak wajib sekarang karena mungkin logging juga bermasalah pada setup awal.
+        }
     }
+
+    return [
+        'index' => Pages\ListKontaks::route('/'),
+        'edit'  => Pages\EditKontak::route('/{record}/edit'),
+    ];
+}
+
 
     public static function canCreate(): bool
     {
