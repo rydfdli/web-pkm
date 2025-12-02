@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kontaks', function (Blueprint $table) {
+        Schema::create('jams', function (Blueprint $table) {
             $table->id();
-            $table->string('alamat')->nullable();
-            $table->string('telepon')->nullable();
-            $table->string('email')->nullable();
+            $table->string('hari'); // e.g., Senin, Selasa, Sabtu
+            $table->time('jam_mulai')->nullable(); // e.g., 08:00
+            $table->time('jam_selesai')->nullable(); // e.g., 16:00
+            $table->string('keterangan')->nullable(); // e.g., "hanya tindakan darurat"
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kontaks');
+        Schema::dropIfExists('jams');
     }
 };

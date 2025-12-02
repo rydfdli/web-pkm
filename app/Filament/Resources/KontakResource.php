@@ -13,25 +13,46 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\KontakResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\KontakResource\RelationManagers;
+use Filament\Forms\Components\RichEditor;
 
 class KontakResource extends Resource
 {
     protected static ?string $model = Kontak::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-phone';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 //
-                Forms\Components\TextInput::make('alamat')
+                // Forms\Components\TextInput::make('alamat')
+                //     ->label('Alamat')
+                //     ->required()
+                //     ->maxLength(255),
+                RichEditor::make('alamat')
                     ->label('Alamat')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strike',
+                        'link',
+                        'bulletList',
+                        'orderedList',
+                        'blockquote',
+                        'undo',
+                        'redo',
+                    ])
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('telepon')
                     ->label('Telepon')
                     ->required()
+                    ->maxLength(20),
+                Forms\Components\TextInput::make('whatsapp')
+                    ->label('WhatsApp')
                     ->maxLength(20),
                 Forms\Components\TextInput::make('email')
                     ->label('Email')
@@ -103,5 +124,15 @@ class KontakResource extends Resource
     public static function canDeleteAny(): bool
     {
         return false;
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Kontak';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Kontak';
     }
 }

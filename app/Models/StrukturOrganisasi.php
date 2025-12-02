@@ -8,4 +8,5 @@ class StrukturOrganisasi extends Model
 {
     //
     protected $fillable = ['foto'];
+    
 }

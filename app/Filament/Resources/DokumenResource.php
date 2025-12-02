@@ -92,4 +92,14 @@ class DokumenResource extends Resource
         $data['user_id'] = auth()->user()?->id; // ✅ Ganti ke 'user_id'
         return $data;
     }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Dokumen';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Dokumen';
+    }
 }

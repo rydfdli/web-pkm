@@ -20,8 +20,11 @@
   <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#">
-        <i class="fas fa-hospital-alt me-2"></i>
-        Puskesmas Sentosa
+        @if ($settings->logo == null)
+           <p>No Logo Available</p>
+           @else
+           <img src="{{ asset('storage/' . $settings->logo) }}" alt="Logo Puskesmas" class="navbar-logo" style="width: 100%; height: 40px; object-fit: cover;">
+        @endif
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
         <span class="navbar-toggler-icon"></span>
@@ -64,30 +67,20 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h5><i class="fas fa-hospital-alt me-2"></i>Puskesmas Sehat Sentosa</h5>
-          <p>Memberikan pelayanan kesehatan terbaik dengan teknologi modern dan tenaga medis profesional untuk kesejahteraan masyarakat.</p>
+          <img src="{{ asset('storage/' . $settings->logo) }}" alt="Logo Puskesmas" class="footer-logo" style="width: auto; height: 30px; object-fit: cover;">
+          {{-- <p>Memberikan pelayanan kesehatan terbaik dengan teknologi modern dan tenaga medis profesional untuk kesejahteraan masyarakat.</p> --}}
         </div>
         <div class="footer-section">
           <h5>Layanan Kami</h5>
-          <a href="#">Poli Umum</a>
-          <a href="#">Imunisasi</a>
-          <a href="#">KIA & KB</a>
-          <a href="#">Kesehatan Gigi</a>
-          <a href="#">Laboratorium</a>
-        </div>
-        <div class="footer-section">
-          <h5>Informasi</h5>
-          <a href="#">Profil Puskesmas</a>
-          <a href="#">Dokter & Staff</a>
-          <a href="#">Fasilitas</a>
-          <a href="#">Jadwal Pelayanan</a>
-          <a href="#">Cara Pendaftaran</a>
+          @foreach ($layanans as $layanan)
+          <a href="#">{{ $layanan->judul_layanan }}</a>
+          @endforeach
         </div>
         <div class="footer-section">
           <h5>Kontak & Sosial Media</h5>
-          <p><i class="fas fa-phone me-2"></i>(021) 1234-5678</p>
-          <p><i class="fas fa-envelope me-2"></i>info@puskesmassehatssentosa.go.id</p>
-          <div class="mt-3">
+          <p><i class="fas fa-phone me-2"></i>{{ $kontak->telepon }}</p>
+          <p><i class="fas fa-envelope me-2"></i>{{ $kontak->email }}</p>
+          <div class="mt-3 d-flex">
             <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
             <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
             <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
@@ -96,7 +89,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 Puskesmas Sehat Sentosa. All rights reserved. | Kementerian Kesehatan Republik Indonesia</p>
+        <p>&copy; 2025 {{ $settings->nama_puskesmas }}. All rights reserved. | RF</p>
       </div>
     </div>
   </footer>

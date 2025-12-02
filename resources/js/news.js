@@ -1,9 +1,9 @@
-// Berita Page JavaScript - Search & Filter Functionality
+// Berita Page JavaScript - Server-side Search & Filter
 
 document.addEventListener('DOMContentLoaded', function() {
     initNewsSearch();
     initCategoryFilter();
-    initPagination();
+    initFormSubmission();
 });
 
 // Initialize search functionality
@@ -11,266 +11,221 @@ function initNewsSearch() {
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const categoryFilter = document.getElementById('categoryFilter');
+    const searchForm = document.querySelector('form[action*="news"]');
     
-    if (!searchInput || !searchBtn || !categoryFilter) return;
+    if (!searchInput || !searchBtn || !categoryFilter || !searchForm) return;
     
-    // Search on button click
-    searchBtn.addEventListener('click', performSearch);
+    // Search on button click - submit form
+    searchBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        submitSearch();
+    });
     
-    // Search on Enter key
+    // Search on Enter key - submit form
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            performSearch();
+            submitSearch();
         }
     });
     
-    // Real-time search (optional - with debounce)
+    // Optional: Real-time search with debounce (submit form after delay)
     let searchTimeout;
     searchInput.addEventListener('input', function() {
         clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(performSearch, 500); // 500ms delay
+        const searchValue = this.value.trim();
+        
+        // Only trigger if search has minimum length or is empty (to clear)
+        if (searchValue.length >= 2 || searchValue.length === 0) {
+            searchTimeout = setTimeout(() => {
+                submitSearch();
+            }, 800); // 800ms delay
+        }
     });
     
-    // Filter on category change
-    categoryFilter.addEventListener('change', performSearch);
+    // Filter on category change - submit form
+    categoryFilter.addEventListener('change', function() {
+        submitSearch();
+    });
 }
 
 // Initialize category filter from sidebar
 function initCategoryFilter() {
-    const categoryLinks = document.querySelectorAll('.category-list a[data-filter]');
+    const categoryLinks = document.querySelectorAll('.category-list a');
     
     categoryLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const category = this.getAttribute('data-filter');
+            // Let the default behavior happen (navigate to URL)
+            // This will trigger server-side filtering
             
-            // Update select dropdown
-            const categoryFilter = document.getElementById('categoryFilter');
-            if (categoryFilter) {
-                categoryFilter.value = category;
-            }
-            
-            // Clear search input
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.value = '';
-            }
-            
-            // Perform filter
-            performSearch();
-            
-            // Visual feedback
-            this.style.color = 'var(--primary-color)';
-            setTimeout(() => {
-                this.style.color = '';
-            }, 300);
+            // Optional: Add loading state
+            showLoadingState(true);
         });
     });
 }
 
-// Perform search and filter
-function performSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const categoryFilter = document.getElementById('categoryFilter');
-    const newsItems = document.querySelectorAll('.news-item');
-    const noResults = document.getElementById('noResults');
-    const resultsInfo = document.querySelector('.results-info');
+// Initialize form submission handling
+function initFormSubmission() {
+    const searchForm = document.querySelector('form[action*="news"]');
+    if (!searchForm) return;
     
-    if (!searchInput || !categoryFilter || !newsItems.length) return;
-    
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    const selectedCategory = categoryFilter.value.toLowerCase();
-    
-    let visibleCount = 0;
-    let totalItems = newsItems.length;
-    
-    // Show loading state
-    showLoadingState(true);
-    
-    // Simulate API delay for better UX
-    setTimeout(() => {
-        newsItems.forEach(item => {
-            const title = item.getAttribute('data-title').toLowerCase();
-            const category = item.getAttribute('data-category').toLowerCase();
-            const content = item.querySelector('.card-text').textContent.toLowerCase();
-            
-            let matchesSearch = true;
-            let matchesCategory = true;
-            
-            // Check search term match
-            if (searchTerm) {
-                matchesSearch = title.includes(searchTerm) || content.includes(searchTerm);
-            }
-            
-            // Check category match
-            if (selectedCategory) {
-                matchesCategory = category === selectedCategory;
-            }
-            
-            // Show/hide item
-            if (matchesSearch && matchesCategory) {
-                item.classList.remove('hidden');
-                // Add fade-in animation
-                item.style.animation = 'fadeInUp 0.5s ease forwards';
-                visibleCount++;
-            } else {
-                item.classList.add('hidden');
-            }
-        });
+    searchForm.addEventListener('submit', function(e) {
+        // Allow form submission to happen normally
+        showLoadingState(true);
         
-        // Update results info
-        updateResultsInfo(visibleCount, totalItems, searchTerm, selectedCategory);
+        // Optional: Clean up empty inputs before submit
+        const formData = new FormData(this);
+        const search = formData.get('search');
+        const kategori = formData.get('kategori');
         
-        // Show/hide no results message
-        if (visibleCount === 0) {
-            noResults.style.display = 'block';
-            noResults.style.animation = 'fadeInUp 0.5s ease forwards';
-        } else {
-            noResults.style.display = 'none';
+        // Remove empty search parameter to clean URL
+        if (!search || search.trim() === '') {
+            const searchInput = this.querySelector('input[name="search"]');
+            if (searchInput) {
+                searchInput.removeAttribute('name');
+            }
         }
         
-        // Hide loading state
-        showLoadingState(false);
-        
-        // Update pagination
-        updatePagination(visibleCount);
-        
-    }, 300); // Small delay for better UX
+        // Remove empty category parameter
+        if (!kategori) {
+            const categoryInput = this.querySelector('select[name="kategori"]');
+            if (categoryInput) {
+                categoryInput.removeAttribute('name');
+            }
+        }
+    });
 }
 
-// Update results information
-function updateResultsInfo(visible, total, searchTerm, category) {
-    const resultsInfo = document.querySelector('.results-info');
-    if (!resultsInfo) return;
+// Submit search form
+function submitSearch() {
+    const searchForm = document.querySelector('form[action*="news"]');
+    if (!searchForm) return;
     
-    let infoText = `Menampilkan ${visible} dari ${total} berita`;
+    showLoadingState(true);
     
-    if (searchTerm || category) {
-        infoText += ' (difilter)';
+    // Clean up form before submit
+    const searchInput = searchForm.querySelector('input[name="search"]');
+    const categorySelect = searchForm.querySelector('select[name="kategori"]');
+    
+    // Trim search input
+    if (searchInput && searchInput.value) {
+        searchInput.value = searchInput.value.trim();
     }
     
-    resultsInfo.innerHTML = `<span class="text-muted">${infoText}</span>`;
+    // Submit form (this will reload page with new results)
+    searchForm.submit();
 }
 
 // Show/hide loading state
 function showLoadingState(show) {
     const searchBtn = document.getElementById('searchBtn');
-    if (!searchBtn) return;
-    
-    if (show) {
-        searchBtn.disabled = true;
-        searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Mencari...';
-    } else {
-        searchBtn.disabled = false;
-        searchBtn.innerHTML = '<i class="fas fa-search me-1"></i>Cari';
-    }
-}
-
-// Initialize pagination
-function initPagination() {
-    const paginationLinks = document.querySelectorAll('.page-link');
-    
-    paginationLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Don't do anything for disabled links
-            if (this.closest('.page-item').classList.contains('disabled')) {
-                return;
-            }
-            
-            // Remove active class from all items
-            document.querySelectorAll('.page-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Add active class to clicked item (if it's a number)
-            const pageText = this.textContent.trim();
-            if (!isNaN(pageText)) {
-                this.closest('.page-item').classList.add('active');
-            }
-            
-            // Simulate page load
-            simulatePageLoad();
-            
-            // Scroll to top of news section
-            const newsSection = document.querySelector('#newsContainer');
-            if (newsSection) {
-                newsSection.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
-        });
-    });
-}
-
-// Update pagination based on results
-function updatePagination(visibleCount) {
-    // Simple pagination update - in real app this would be more complex
-    const pagination = document.querySelector('.pagination');
-    if (!pagination) return;
-    
-    // Hide pagination if no results or very few results
-    if (visibleCount <= 6) {
-        pagination.style.display = 'none';
-    } else {
-        pagination.style.display = 'flex';
-    }
-}
-
-// Simulate page loading
-function simulatePageLoad() {
-    const newsContainer = document.getElementById('newsContainer');
-    if (!newsContainer) return;
-    
-    // Add loading effect
-    newsContainer.style.opacity = '0.5';
-    newsContainer.style.pointerEvents = 'none';
-    
-    setTimeout(() => {
-        newsContainer.style.opacity = '1';
-        newsContainer.style.pointerEvents = 'auto';
-        
-        // Re-trigger animations
-        const newsItems = newsContainer.querySelectorAll('.news-item:not(.hidden)');
-        newsItems.forEach((item, index) => {
-            item.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s forwards`;
-        });
-    }, 500);
-}
-
-// Clear all filters
-function clearAllFilters() {
     const searchInput = document.getElementById('searchInput');
     const categoryFilter = document.getElementById('categoryFilter');
     
-    if (searchInput) searchInput.value = '';
-    if (categoryFilter) categoryFilter.value = '';
-    
-    performSearch();
+    if (show) {
+        if (searchBtn) {
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Mencari...';
+        }
+        if (searchInput) searchInput.disabled = true;
+        if (categoryFilter) categoryFilter.disabled = true;
+        
+        // Show loading overlay if exists
+        showLoadingOverlay(true);
+    } else {
+        if (searchBtn) {
+            searchBtn.disabled = false;
+            searchBtn.innerHTML = '<i class="fas fa-search me-1"></i>Cari';
+        }
+        if (searchInput) searchInput.disabled = false;
+        if (categoryFilter) categoryFilter.disabled = false;
+        
+        showLoadingOverlay(false);
+    }
 }
 
-// Add clear filters button functionality
+// Show/hide loading overlay
+function showLoadingOverlay(show) {
+    let overlay = document.getElementById('searchLoadingOverlay');
+    
+    if (show) {
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'searchLoadingOverlay';
+            overlay.className = 'search-loading-overlay';
+            overlay.innerHTML = `
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="text-muted">Mencari berita...</div>
+                    </div>
+                </div>
+            `;
+            
+            const newsContainer = document.getElementById('newsContainer');
+            if (newsContainer) {
+                newsContainer.parentNode.style.position = 'relative';
+                newsContainer.parentNode.appendChild(overlay);
+            }
+        }
+        overlay.style.display = 'flex';
+    } else {
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+    }
+}
+
+// Clear all filters - navigate to clean URL
+function clearAllFilters() {
+    const baseUrl = window.location.pathname;
+    window.location.href = baseUrl;
+}
+
+// Handle pagination links
 document.addEventListener('DOMContentLoaded', function() {
-    // Add clear button if needed
-    const searchBox = document.querySelector('.search-box');
-    if (searchBox) {
-        const clearBtn = document.createElement('button');
-        clearBtn.type = 'button';
-        clearBtn.className = 'btn btn-outline-secondary btn-sm ms-2';
-        clearBtn.innerHTML = '<i class="fas fa-times"></i> Reset';
-        clearBtn.addEventListener('click', clearAllFilters);
-        
-        // Insert after search box (optional)
-        // searchBox.parentNode.insertBefore(clearBtn, searchBox.nextSibling);
+    const paginationLinks = document.querySelectorAll('.pagination .page-link');
+    
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Add loading state for pagination
+            showLoadingState(true);
+        });
+    });
+});
+
+// Handle browser back/forward navigation
+window.addEventListener('popstate', function(e) {
+    // Page will reload automatically, just show loading
+    showLoadingState(true);
+});
+
+// Auto-focus search input on page load if there's a search term
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (searchInput && !urlParams.get('search')) {
+        // Only focus if not searching (to avoid jumping)
+        searchInput.focus();
     }
 });
 
-// Export functions for use in other scripts if needed
+// Utility: Get current search parameters
+function getCurrentSearchParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+        search: urlParams.get('search') || '',
+        kategori: urlParams.get('kategori') || ''
+    };
+}
+
+// Export functions for debugging
 window.NewsSearch = {
-    performSearch,
+    submitSearch,
     clearAllFilters,
-    updateResultsInfo
+    getCurrentSearchParams,
+    showLoadingState
 };

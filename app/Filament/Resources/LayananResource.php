@@ -27,7 +27,7 @@ class LayananResource extends Resource
 {
     protected static ?string $model = Layanan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
     public static function form(Form $form): Form
     {
@@ -127,7 +127,7 @@ class LayananResource extends Resource
                 TextColumn::make('icon')
                     ->label('Icon')
                     ->html()
-                    ->formatStateUsing(fn ($state) => "<i class='{$state} text-lg'></i>")
+                    ->formatStateUsing(fn($state) => "<i class='{$state} text-lg'></i>")
                     ->width(60),
 
                 TextColumn::make('judul_layanan')
@@ -151,13 +151,13 @@ class LayananResource extends Resource
                     ->label('Badge')
                     ->colors([
                         'primary' => 'primary',
-                        'secondary' => 'secondary', 
+                        'secondary' => 'secondary',
                         'success' => 'success',
                         'danger' => 'danger',
                         'warning' => 'warning',
                         'info' => 'info',
                     ])
-                    ->color(fn ($record) => $record->badge_color ?? 'primary')
+                    ->color(fn($record) => $record->badge_color ?? 'primary')
                     ->placeholder('Tidak ada badge'),
 
                 BooleanColumn::make('is_active')
@@ -223,5 +223,15 @@ class LayananResource extends Resource
             'create' => Pages\CreateLayanan::route('/create'),
             'edit' => Pages\EditLayanan::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Layanan';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Layanan';
     }
 }

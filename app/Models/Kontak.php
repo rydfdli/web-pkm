@@ -8,5 +8,5 @@ class Kontak extends Model
 {
     protected $table = 'kontaks';
     //
-    protected $fillable = ['alamat', 'telepon', 'email'];
+    protected $fillable = ['alamat', 'telepon','whatsapp', 'email'];
 }

@@ -11,141 +11,166 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BeritaResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\BeritaResource\RelationManagers;
 
 class BeritaResource extends Resource
 {
     protected static ?string $model = Berita::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+    protected static ?string $navigationLabel = 'Berita & Kegiatan';
+    protected static ?string $pluralModelLabel = 'Berita & Kegiatan';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                // Basic Information
                 Forms\Components\TextInput::make('judul')
-                    ->label('Judul')
                     ->required()
-                    ->live(onBlur: true) // trigger saat user selesai ketik
-                    ->afterStateUpdated(function ($state, callable $set, ?string $operation, ?Berita $record) {
-                        // Jangan auto-generate slug saat edit jika slug sudah ada
-                        if ($operation === 'edit' && $record?->slug) {
-                            return;
-                        }
-
-                        if ($state) {
-                            $baseSlug = Str::slug($state);
-                            $slug = $baseSlug;
-                            $counter = 1;
-
-                            // Cek unique slug
-                            while (Berita::where('slug', $slug)
-                                ->when($record, fn($query) => $query->where('id', '!=', $record->id))
-                                ->exists()
-                            ) {
-                                $slug = $baseSlug . '-' . $counter;
-                                $counter++;
-                            }
-
-                            $set('slug', $slug);
-                        }
-                    })
-                    ->maxLength(255),
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn ($state, $set, $operation, $record) => 
+                        self::generateSlug($state, $set, $operation, $record)
+                    ),
 
                 Forms\Components\TextInput::make('slug')
-                    ->label('Slug')
+                    ->disabled()
+                    ->unique(ignoreRecord: true),
+
+                Forms\Components\Select::make('kategori')
                     ->required()
-                    ->disabled(true) // disable
-                    ->unique(Berita::class, 'slug', ignoreRecord: true)
-                    ->rules(['alpha_dash']) // hanya huruf, angka, dash, underscore
-                    ->helperText('URL slug untuk berita (otomatis dari judul)')
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        if ($state) {
-                            $set('slug', Str::slug($state));
-                        }
-                    }),
+                    ->options(self::getKategoriOptions())
+                    ->native(false),
+
+                // Content
+                Forms\Components\Textarea::make('excerpt')
+                    ->rows(2)
+                    ->maxLength(300)
+                    ->columnSpanFull(),
 
                 Forms\Components\RichEditor::make('isi')
-                    ->label('Isi Berita')
                     ->required()
-                    ->columnSpanFull(), // full width
+                    ->columnSpanFull(),
 
-
+                // Media
                 Forms\Components\FileUpload::make('gambar')
-                    ->label('Gambar Utama (Thumbnail)')
                     ->image()
-                    ->imagePreviewHeight('250')
                     ->disk('public')
-                    ->directory('berita/featured')
-                    ->nullable() // tidak wajib karena sudah ada rich editor
-                    ->maxSize(2048)
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                    ->helperText('Opsional: Gambar utama untuk thumbnail/preview'),
+                    ->directory('berita')
+                    ->maxSize(2048),
+
+                // Tags
+                Forms\Components\TagsInput::make('tags')
+                    ->columnSpanFull(),
+
+                // Publication Settings
+                Forms\Components\Grid::make(3)
+                    ->schema([
+                        Forms\Components\Toggle::make('is_featured')
+                            ->label('Berita Utama'),
+                        
+                        Forms\Components\Toggle::make('is_published')
+                            ->label('Publikasikan')
+                            ->default(true),
+                        
+                        Forms\Components\DateTimePicker::make('published_at')
+                            ->label('Tanggal Publikasi')
+                            ->default(now()),
+                    ]),
+
+                // SEO (Optional Section)
+                Forms\Components\Section::make('SEO')
+                    ->schema([
+                        Forms\Components\Textarea::make('meta_description')
+                            ->maxLength(160)
+                            ->rows(2),
+                    ])
+                    ->collapsed(),
 
                 Forms\Components\Hidden::make('user_id')
-                    ->default(optional(auth())->id),
+                    ->default(auth()->id()),
             ]);
     }
-
-    public static function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['published_by'] = auth()?->id;
-        return $data;
-    }
-
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('gambar')
-                    ->label('Thumbnail')
-                    ->disk('public')
-                    ->height(60)
-                    ->defaultImageUrl('/images/no-image.png'), // fallback jika tidak ada gambar
+                    ->height(50)
+                    ->width(70),
 
                 Tables\Columns\TextColumn::make('judul')
-                    ->label('Judul')
                     ->searchable()
                     ->sortable()
-                    ->wrap()
-                    ->limit(50),
+                    ->limit(50)
+                    ->weight('bold'),
 
-                Tables\Columns\TextColumn::make('slug')
-                    ->label('Slug')
-                    ->searchable()
-                    ->copyable()
-                    ->copyMessage('Slug berhasil disalin!')
-                    ->color('gray')
-                    ->fontFamily('mono')
-                    ->toggleable(),
+                Tables\Columns\BadgeColumn::make('kategori')
+                    ->colors([
+                        'primary' => 'pengumuman',
+                        'success' => 'program', 
+                        'warning' => 'kegiatan',
+                        'info' => 'edukasi',
+                        'secondary' => 'info',
+                    ]),
 
+                Tables\Columns\IconColumn::make('is_featured')
+                    ->label('Utama')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-star')
+                    ->trueColor('warning'),
+
+                Tables\Columns\IconColumn::make('is_published')
+                    ->label('Status')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger'),
+
+                Tables\Columns\TextColumn::make('views_count')
+                    ->label('Views')
+                    ->badge()
+                    ->alignCenter(),
+
+                Tables\Columns\TextColumn::make('published_at')
+                    ->dateTime('d/m/Y')
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Penulis')
-                    ->sortable()
-                    ->searchable(),
+                    ->toggleable(),
+            ])
+            ->defaultSort('published_at', 'desc')
+            ->filters([
+                Tables\Filters\SelectFilter::make('kategori')
+                    ->options(self::getKategoriOptions()),
 
+                Tables\Filters\TernaryFilter::make('is_featured')
+                    ->label('Berita Utama'),
+
+                Tables\Filters\TernaryFilter::make('is_published')
+                    ->label('Status'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->url(fn ($record) => route('berita.show', $record->slug))
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    
+                    Tables\Actions\BulkAction::make('publish')
+                        ->label('Publikasikan')
+                        ->icon('heroicon-o-eye')
+                        ->color('success')
+                        ->action(fn ($records) => $records->each->update([
+                            'is_published' => true,
+                            'published_at' => now()
+                        ])),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -155,5 +180,41 @@ class BeritaResource extends Resource
             'create' => Pages\CreateBerita::route('/create'),
             'edit' => Pages\EditBerita::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('is_published', true)->count();
+    }
+
+    // Helper Methods
+    private static function getKategoriOptions(): array
+    {
+        return [
+            'pengumuman' => 'Pengumuman',
+            'program' => 'Program Kesehatan',
+            'kegiatan' => 'Kegiatan', 
+            'edukasi' => 'Edukasi',
+            'info' => 'Informasi Umum',
+        ];
+    }
+
+    private static function generateSlug($state, $set, $operation, $record): void
+    {
+        if ($operation === 'edit' && $record?->slug) return;
+
+        if ($state) {
+            $baseSlug = Str::slug($state);
+            $slug = $baseSlug;
+            $counter = 1;
+
+            while (Berita::where('slug', $slug)
+                ->when($record, fn($query) => $query->where('id', '!=', $record->id))
+                ->exists()) {
+                $slug = $baseSlug . '-' . $counter++;
+            }
+
+            $set('slug', $slug);
+        }
     }
 }

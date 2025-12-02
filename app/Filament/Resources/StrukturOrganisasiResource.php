@@ -19,7 +19,7 @@ class StrukturOrganisasiResource extends Resource
 {
     protected static ?string $model = StrukturOrganisasi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -29,10 +29,13 @@ class StrukturOrganisasiResource extends Resource
                 FileUpload::make('foto')
                     ->label('Foto Bagan Struktur')
                     ->image()
-                    ->imagePreviewHeight('250') // tampilkan preview
+                    ->imagePreviewHeight('250')
+                    ->nullable() // tampilkan preview
                     ->disk('public') // folder simpan
                     ->required()
-                    ->maxSize(2048), // 2MB
+                    ->maxSize(2048) // 2MB
+                    ->lazy()
+                    ->previewable(false) // nonaktifkan preview
             ]);
     }
 

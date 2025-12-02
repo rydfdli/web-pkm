@@ -15,10 +15,24 @@ return new class extends Migration
             $table->id();
             $table->string('judul');
             $table->string('slug')->unique();
-            $table->text('isi');
+            $table->text('excerpt')->nullable(); // For featured news excerpt
+            $table->longText('isi'); // Changed to longText for longer content
             $table->string('gambar')->nullable();
+            $table->enum('kategori', ['pengumuman', 'program', 'kegiatan', 'edukasi', 'info']); // Categories
+            $table->boolean('is_featured')->default(false); // For featured news
+            $table->boolean('is_published')->default(true); // Publication status
+            $table->integer('views_count')->default(0); // For popular news
+            $table->string('meta_description')->nullable(); // SEO
+            $table->json('tags')->nullable(); // Tags for better categorization
+            $table->timestamp('published_at')->nullable(); // Custom publish date
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            
+            // Indexes for better performance
+            $table->index(['kategori', 'is_published']);
+            $table->index(['is_featured', 'published_at']);
+            $table->index('views_count');
+            $table->index('slug');
         });
     }
 

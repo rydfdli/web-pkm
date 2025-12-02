@@ -6,7 +6,7 @@
   <div class="container">
     <div class="hero-content text-center fade-in-up">
       <h1 class="hero-title">Struktur Organisasi</h1>
-      <p class="hero-subtitle">Puskesmas Sehat Sentosa</p>
+      <p class="hero-subtitle">{{ $settings->struktur_tagline }}</p>
     </div>
   </div>
 </section>
@@ -18,9 +18,9 @@
       <div class="col-lg-12">
         <div class="text-center fade-in-up">
           <div class="org-chart-container">
-            <img src="{{ asset('images/struktur-organisasi-puskesmas.png') }}" 
-                 alt="Struktur Organisasi Puskesmas Sehat Sentosa" 
-                 class="org-chart-image">
+            <img src="{{ asset('storage/' . $struktur->foto) }}" 
+            alt="{{ $struktur->foto }}" 
+            class="org-chart-image">
           </div>
         </div>
       </div>

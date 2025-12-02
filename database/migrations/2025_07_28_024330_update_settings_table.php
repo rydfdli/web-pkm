@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kontaks', function (Blueprint $table) {
-            $table->id();
-            $table->string('alamat')->nullable();
-            $table->string('telepon')->nullable();
-            $table->string('email')->nullable();
-            $table->timestamps();
+        //
+        Schema::table('settings',function (Blueprint $table) {
+            $table->string('nama_puskesmas')->nullable();
         });
-        
     }
 
     /**
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kontaks');
+        //
     }
 };

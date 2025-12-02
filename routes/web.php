@@ -1,27 +1,26 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KontakController;
+use App\Http\Controllers\LayananController;
+use App\Http\Controllers\StrukturController;
+use App\Http\Controllers\VisiController;
 
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/news', function () {
-    return view('news');
-})->name('news');
+Route::get('/news', [BeritaController::class, 'index'])->name('news');
 
-Route::get('/contact', function () {
-    return view('kontak');
-})->name('contact');
+// Tambahkan route untuk detail berita
+Route::get('/news/{berita:slug}', [BeritaController::class, 'show'])->name('berita.show');
 
-Route::get('/visi', function () {
-    return view('visi');
-})->name('visi');
 
-Route::get('/struktur', function () {
-    return view('struktur');
-})->name('struktur');
+Route::get('/contact', [KontakController::class, 'index'])->name('contact');
 
-Route::get('/layanan', function () {
-    return view('layanan');
-})->name('layanan');
+Route::get('/visi', [VisiController::class, 'index'])->name('visi');
+
+Route::get('/struktur', [StrukturController::class, 'index'])->name('struktur');
+
+Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');

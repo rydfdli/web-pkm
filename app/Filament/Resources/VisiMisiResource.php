@@ -19,7 +19,7 @@ class VisiMisiResource extends Resource
 {
     protected static ?string $model = VisiMisi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-eye';
 
     public static function form(Form $form): Form
     {
@@ -49,7 +49,7 @@ class VisiMisiResource extends Resource
                         'undo',
                         'redo',
                     ])
-                    ->maxLength(255),
+                    ->maxLength(1000),
                 RichEditor::make('misi')
                     ->label('Misi')
                     ->toolbarButtons([
@@ -65,7 +65,7 @@ class VisiMisiResource extends Resource
                         'redo',
                     ])
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(1000),
             ]);
     }
 
@@ -141,4 +141,6 @@ class VisiMisiResource extends Resource
     {
         return false;
     }
+
+    
 }

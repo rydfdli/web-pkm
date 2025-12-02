@@ -7,7 +7,7 @@
   <div class="container">
     <div class="hero-content text-center fade-in-up">
       <h1 class="hero-title">Visi & Misi</h1>
-      <p class="hero-subtitle">Komitmen Puskesmas Sehat Sentosa untuk Masyarakat</p>
+      <p class="hero-subtitle">{{ $settings->visi_misi_tagline }}</p>
     </div>
   </div>
 </section>
@@ -16,82 +16,45 @@
 <section class="section-padding bg-white">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-lg-10">
+      <div class="col-lg-6">
         
         <!-- Visi Section -->
         <div class="text-center mb-5 fade-in-up">
           <h2 class="section-title">VISI</h2>
           <div class="service-card">
-            <div class="card-body p-5">
+            <div class="card-body">
               <div class="service-icon mx-auto mb-4">
                 <i class="fas fa-eye"></i>
               </div>
-              <p class="lead text-center" style="font-size: 1.3rem; line-height: 1.8; color: var(--dark-text); font-weight: 500;">
-                "Menjadi Puskesmas terdepan dalam memberikan pelayanan kesehatan yang berkualitas, profesional, dan terjangkau untuk mewujudkan masyarakat yang sehat dan sejahtera di wilayah kerja Puskesmas Sehat Sentosa."
-              </p>
+                {!! $visiMisi->visi !!}
             </div>
           </div>
         </div>
 
-        <!-- Divider -->
-        <div class="text-center my-5">
-          <div style="width: 100px; height: 4px; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); margin: 0 auto; border-radius: 2px;"></div>
-        </div>
 
+      </div>
+
+      <div class="col-lg-6">
         <!-- Misi Section -->
-        <div class="text-center fade-in-up">
-          <h2 class="section-title">MISI</h2>
-          <div class="service-card">
-            <div class="card-body p-5">
-              <div class="service-icon mx-auto mb-4">
-                <i class="fas fa-bullseye"></i>
-              </div>
-              <div class="text-start">
-                <div class="misi-item mb-4">
-                  <div class="d-flex align-items-start">
-                    <div class="misi-number">1</div>
-                    <p class="misi-text">Memberikan pelayanan kesehatan yang komprehensif dan berkualitas tinggi untuk seluruh masyarakat tanpa diskriminasi</p>
-                  </div>
-                </div>
-                
-                <div class="misi-item mb-4">
-                  <div class="d-flex align-items-start">
-                    <div class="misi-number">2</div>
-                    <p class="misi-text">Meningkatkan derajat kesehatan masyarakat melalui program promotif dan preventif yang berkelanjutan</p>
-                  </div>
-                </div>
-                
-                <div class="misi-item mb-4">
-                  <div class="d-flex align-items-start">
-                    <div class="misi-number">3</div>
-                    <p class="misi-text">Mengembangkan sumber daya manusia yang profesional, kompeten, dan berintegritas dalam bidang kesehatan</p>
-                  </div>
-                </div>
-                
-                <div class="misi-item mb-4">
-                  <div class="d-flex align-items-start">
-                    <div class="misi-number">4</div>
-                    <p class="misi-text">Menjalin kemitraan strategis dengan berbagai pihak untuk mendukung program kesehatan masyarakat</p>
-                  </div>
-                </div>
-                
-                <div class="misi-item">
-                  <div class="d-flex align-items-start">
-                    <div class="misi-number">5</div>
-                    <p class="misi-text">Memanfaatkan teknologi informasi dan inovasi untuk meningkatkan efisiensi dan kualitas pelayanan kesehatan</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
+         <div class="text-center fade-in-up">
+           <h2 class="section-title">MISI</h2>
+           <div class="service-card">
+             <div class="card-body">
+               <div class="service-icon mx-auto mb-4">
+                 <i class="fas fa-bullseye"></i>
+               </div>
+               <div class="text-start text-6xl">
+                 {!! $visiMisi->misi !!}
+               </div>
+             </div>
+           </div>
+         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Values Section -->
+{{-- <!-- Values Section -->
 <section class="section-padding bg-light-custom">
   <div class="container">
     <h2 class="section-title text-center fade-in-up">Nilai-Nilai Kami</h2>
@@ -145,6 +108,6 @@
       </div>
     </div>
   </div>
-</section>
+</section> --}}
 
 @endsection
