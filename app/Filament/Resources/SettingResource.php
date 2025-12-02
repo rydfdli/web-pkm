@@ -117,28 +117,59 @@ class SettingResource extends Resource
         ];
     }
 
-    public static function getPages(): array
-    {
-        if (Setting::count() === 0) {
-            Setting::create([
-                'nama_puskesmas' => 'Puskesmas Sehat Sentosa',
-                'logo' => null,
-                'hero_image' => null,
-                'wellcome_text' => 'Selamat datang',
-                'wellcome_subtext' => 'Kami siap melayani Anda',
-                'visi_misi_tagline' => '',
-                'struktur_tagline' => '',
-                'layanan_tagline' => '',
-                'kontak_tagline' => '',
-                'berita_tagline' => '',
-            ]);
-        }
+    // public static function getPages(): array
+    // {
+    //     if (Setting::count() === 0) {
+    //         Setting::create([
+    //             'nama_puskesmas' => 'Puskesmas Sehat Sentosa',
+    //             'logo' => null,
+    //             'hero_image' => null,
+    //             'wellcome_text' => 'Selamat datang',
+    //             'wellcome_subtext' => 'Kami siap melayani Anda',
+    //             'visi_misi_tagline' => '',
+    //             'struktur_tagline' => '',
+    //             'layanan_tagline' => '',
+    //             'kontak_tagline' => '',
+    //             'berita_tagline' => '',
+    //         ]);
+    //     }
 
-        return [
-            'index' => Pages\ListSettings::route('/'),
-            'edit' => Pages\EditSetting::route('/{record}/edit'),
-        ];
+    //     return [
+    //         'index' => Pages\ListSettings::route('/'),
+    //         'edit' => Pages\EditSetting::route('/{record}/edit'),
+    //     ];
+    // }
+
+    public static function getPages(): array
+{
+    // Jangan jalankan akses DB saat aplikasi berjalan di console (composer/artisan)
+    if (! app()->runningInConsole()) {
+        try {
+            if (Setting::count() === 0) {
+                Setting::create([
+                    'nama_puskesmas'     => 'Puskesmas Sehat Sentosa',
+                    'logo'               => null,
+                    'hero_image'         => null,
+                    'wellcome_text'      => 'Selamat datang',
+                    'wellcome_subtext'   => 'Kami siap melayani Anda',
+                    'visi_misi_tagline'  => '',
+                    'struktur_tagline'   => '',
+                    'layanan_tagline'    => '',
+                    'kontak_tagline'     => '',
+                    'berita_tagline'     => '',
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Abaikan sementara jika tabel/DB belum ada agar artisan/composer tidak gagal.
+        }
     }
+
+    return [
+        'index' => Pages\ListSettings::route('/'),
+        'edit'  => Pages\EditSetting::route('/{record}/edit'),
+    ];
+}
+
 
     public static function canCreate(): bool
     {

@@ -104,11 +104,18 @@ class VisiMisiResource extends Resource
 
     public static function getPages(): array
     {
-        if (VisiMisi::count() === 0) {
-            VisiMisi::create([
-                'visi' => '',
-                'misi' => '',
-            ]);
+        if(! app()->runningInConsole()){
+            try {
+                if (VisiMisi::count() === 0) {
+                VisiMisi::create([
+                    'visi' => '',
+                    'misi' => '',
+                ]);
+            }        
+            
+        } catch (\Exception $e) {
+            // Tangani pengecualian jika diperlukan
+        }
         }
 
         return [

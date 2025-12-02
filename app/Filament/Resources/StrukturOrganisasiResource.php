@@ -73,16 +73,23 @@ class StrukturOrganisasiResource extends Resource
 
     public static function getPages(): array
     {
-        if (StrukturOrganisasi::count() === 0) {
-            StrukturOrganisasi::create([
+        if (! app()->runningInConsole()){
+            try {
+                if (StrukturOrganisasi::count() === 0) {
+                StrukturOrganisasi::create([
                 'foto' => 'tidak ada foto',
-            ]);
+                ]);        
+            }
+            } catch (\Exception $e) {
+                // Tangani pengecualian jika diperlukan
+            }
         }
-
+        
         return [
             'index' => Pages\ListStrukturOrganisasis::route('/'),
             'edit' => Pages\EditStrukturOrganisasi::route('/{record}/edit'),
         ];
+    
     }
 
     public static function getNavigationLabel(): string
