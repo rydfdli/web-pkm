@@ -10,12 +10,12 @@
   
   <!-- Font Awesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('build/assets/home-BiwRWLpA.css') }}">
-  <link rel="stylesheet" href="{{ asset('build/assets/layanan-Ddd6CVZP.css') }}">
-  <link rel="stylesheet" href="{{ asset('build/assets/news-B4tsXVYB.css') }}">
-  <link rel="stylesheet" href="{{ asset('build/assets/style-DyYBdF_P.css') }}">
-  <link rel="stylesheet" href="{{ asset('build/assets/visi-misi-CVxGqjP0.css') }}">
-  <script src="{{ asset('build/assets/app-C0G0cght.js') }}"></script>
+  <link rel="stylesheet" href="{{ asset('css/home-BiwRWLpA.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/layanan-Ddd6CVZP.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/news-B4tsXVYB.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/style-DyYBdF_P.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/visi-misi-CVxGqjP0.css') }}">
+  <script src="{{ asset('js/app-C0G0cght.js') }}"></script>
   <!-- Custom CSS -->
   {{-- @vite(['resources/css/style.css', 'resources/js/script.js']) --}}
 </head>
