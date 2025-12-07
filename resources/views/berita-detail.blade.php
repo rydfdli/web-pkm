@@ -3,7 +3,7 @@
 
 
 @section('content')
-{{-- @vite(['resources/css/detail.css', 'resources/css/news.css']) --}}
+@vite(['resources/css/detail.css', 'resources/css/news.css'])
 
 {{-- Breadcrumb Section --}}
 

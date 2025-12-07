@@ -13,7 +13,9 @@ export default defineConfig({
                 'resources/css/style.css',
                 'resources/css/visi-misi.css', 
                 'resources/js/app.js',
-                
+                'resources/js/bootstrap.js',
+                'resources/js/news.js',
+                'resources/js/script.js'
             ],
             refresh: true,
         }),

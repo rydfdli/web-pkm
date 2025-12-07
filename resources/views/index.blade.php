@@ -1,6 +1,7 @@
 @extends('layout.index')
 
 @section('content')
+@vite(['resources/css/home.css'])
 <!-- Hero Section -->
 <section id="beranda" class="hero-section">
   <!-- Background Image -->
@@ -63,8 +64,8 @@
   <div class="container">
     <h2 class="section-title text-center fade-in-up">Layanan Unggulan</h2>
     <div class="row">
+      @foreach ($layanans as $layanan)  
       <div class="col-lg-4 col-md-6 mb-4">
-        @foreach ($layanans as $layanan)  
         <div class="service-card fade-in-up">
           <div class="card-body">
             <div class="service-icon">
@@ -74,9 +75,11 @@
             <p class="card-text">Pelayanan konsultasi dan pengobatan penyakit umum dengan dokter berpengalaman dan fasilitas modern.</p>
           </div>
         </div>
-        @endforeach
       </div>
+      @endforeach
     </div>
+        
+      
     <div class="text-center mt-4">
       <a href="{{ route('layanan') }}" class="btn btn-hero">
         <i class="fas fa-arrow-right me-2"></i>Lihat Semua Layanan

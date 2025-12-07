@@ -1,0 +1,92 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-C0kVAQ96.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/css/detail.css": {
+    "file": "assets/detail-DAXgcR4q.css",
+    "src": "resources/css/detail.css",
+    "isEntry": true,
+    "name": "detail",
+    "names": [
+      "detail.css"
+    ]
+  },
+  "resources/css/home.css": {
+    "file": "assets/home-BiwRWLpA.css",
+    "src": "resources/css/home.css",
+    "isEntry": true,
+    "name": "home",
+    "names": [
+      "home.css"
+    ]
+  },
+  "resources/css/layanan.css": {
+    "file": "assets/layanan-Ddd6CVZP.css",
+    "src": "resources/css/layanan.css",
+    "isEntry": true,
+    "name": "layanan",
+    "names": [
+      "layanan.css"
+    ]
+  },
+  "resources/css/news.css": {
+    "file": "assets/news-B4tsXVYB.css",
+    "src": "resources/css/news.css",
+    "isEntry": true,
+    "name": "news",
+    "names": [
+      "news.css"
+    ]
+  },
+  "resources/css/style.css": {
+    "file": "assets/style-DyYBdF_P.css",
+    "src": "resources/css/style.css",
+    "isEntry": true,
+    "name": "style",
+    "names": [
+      "style.css"
+    ]
+  },
+  "resources/css/visi-misi.css": {
+    "file": "assets/visi-misi-CVxGqjP0.css",
+    "src": "resources/css/visi-misi.css",
+    "isEntry": true,
+    "name": "visi-misi",
+    "names": [
+      "visi-misi.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-vXxwagmv.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "resources/js/bootstrap.js"
+    ]
+  },
+  "resources/js/bootstrap.js": {
+    "file": "assets/bootstrap-CAiCLEjY.js",
+    "name": "bootstrap",
+    "src": "resources/js/bootstrap.js",
+    "isEntry": true
+  },
+  "resources/js/news.js": {
+    "file": "assets/news-BiKhbgkF.js",
+    "name": "news",
+    "src": "resources/js/news.js",
+    "isEntry": true
+  },
+  "resources/js/script.js": {
+    "file": "assets/script-g6LS2w12.js",
+    "name": "script",
+    "src": "resources/js/script.js",
+    "isEntry": true
+  }
+}
