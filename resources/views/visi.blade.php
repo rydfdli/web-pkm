@@ -1,7 +1,7 @@
 @extends('layout.index')
 
 @section('content')
-@vite('resources/css/visi-misi.css')
+{{-- @vite('resources/css/visi-misi.css') --}}
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="container">

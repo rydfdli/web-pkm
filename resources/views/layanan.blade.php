@@ -1,7 +1,7 @@
 @extends('layout.index')
 
 @section('content')
-@vite('resources/css/layanan.css')
+{{-- @vite('resources/css/layanan.css') --}}
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="container">

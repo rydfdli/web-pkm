@@ -1,7 +1,6 @@
 @extends('layout.index')
 
 @section('content')
-@vite('resources/css/home.css')
 <!-- Hero Section -->
 <section id="beranda" class="hero-section">
   <!-- Background Image -->

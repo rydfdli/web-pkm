@@ -2,7 +2,7 @@
 
 
 @section('content')
-@vite(['resources/css/news.css'])
+{{-- @vite(['resources/css/news.css']) --}}
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="container">
